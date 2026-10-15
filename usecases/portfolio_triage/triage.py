@@ -4,8 +4,8 @@ The job: an architect hands over an application inventory. The agent reads each
 application, recommends a modernization disposition (retain, retire, rehost,
 replatform, repurchase or refactor) with a one-sentence reason, and records it.
 
-    uv run python -m simple.triage --fake      offline: scripted replies, no key, no cost
-    uv run python -m simple.triage             real run: needs ANTHROPIC_API_KEY
+    uv run python -m usecases.portfolio_triage.triage --fake    offline: scripted replies, no key, no cost
+    uv run python -m usecases.portfolio_triage.triage           real run: needs ANTHROPIC_API_KEY
 
 Everything a harness needs is in this one file, in five numbered parts:
     1. the loop       call the model, run the tools it asks for, send the results back
@@ -164,7 +164,7 @@ def main():
     args = parser.parse_args()
 
     if args.fake:
-        from simple.fake import FakeClient         # same .messages.create() as the real client
+        from usecases.portfolio_triage.fake import FakeClient         # same .messages.create() as the real client
         client = FakeClient()
     else:
         import anthropic

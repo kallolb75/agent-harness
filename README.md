@@ -1,6 +1,20 @@
 # AgentHarness
 
-A small, readable agent harness for legacy code intake.
+A small, readable agent harness for AI-assisted modernization.
+
+The harness gives every agent the same loop, guardrails, cost control, tracing and
+evaluation. Each phase of a modernization program plugs in as a use case:
+
+| Phase | Use case | What the agent does | How it is graded | Where |
+| --- | --- | --- | --- | --- |
+| Assess | **Portfolio triage** | Recommends retain, retire, rehost, replatform, repurchase or refactor for each application, with a reason | Agreement with an architect's calls, which the agent never sees | [usecases/portfolio_triage/](usecases/portfolio_triage/README.md) |
+| Understand | **Legacy intake** | An orchestrator directs two workers over a COBOL program: one extracts the business rules, one writes parity tests | Rules found by a person, and an oracle that computes what the COBOL really returns | This folder (below) |
+| Migrate data | **Data mapping** | Maps a legacy table to a new schema and must prove it by reconciliation before it may submit | Reconciliation against the legacy control totals, and the data owner's mapping | [usecases/data_mapping/](usecases/data_mapping/README.md) |
+
+New to agent harnesses? Start with portfolio triage: one file, one agent, three tools.
+Legacy intake is the fuller design.
+
+## Legacy intake (Understand)
 
 An orchestrator model directs two worker agents over one COBOL program. The
 **Analyzer** extracts the program's business rules, each with the source lines that
@@ -63,7 +77,7 @@ uv run python -m evals.check runs/<run_id>/result.json --set-baseline   # accept
 
 New here? Start with [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md): setup, a first run, and how to read what it prints.
 
-Want the smallest version first? [simple/](simple/README.md) is a one-file agent that triages an application portfolio: the same loop, tools, guardrails, telemetry and eval in about 190 lines.
+Want the smallest version first? [usecases/portfolio_triage/](usecases/portfolio_triage/README.md) is a one-file agent: the same loop, tools, guardrails, telemetry and eval in about 190 lines.
 
 1. [docs/CALL_FLOW.md](docs/CALL_FLOW.md): who calls whom, and exactly what each model call sees
 2. [WALKTHROUGH.md](WALKTHROUGH.md): the design choices, the four controls, a file-by-file reading guide
@@ -92,8 +106,16 @@ Want the smallest version first? [simple/](simple/README.md) is a one-file agent
 | `tests/` | Proof the controls work: each test breaks something and expects the harness to notice |
 | `fake/` | Scripted model replies for offline runs and tests |
 | `drill/answer_key.py` | The smallest complete harness loop, for the drill |
-| `simple/` | A one-file portfolio triage agent: the same ideas at their smallest |
+| `usecases/` | The other use cases, one folder each: portfolio triage and data mapping |
 | `runs/` | One folder per run: `result.json`, `tokens.jsonl`, `trace.jsonl` (not committed) |
+
+## Roadmap
+
+Today the legacy intake harness lives at the root and each other use case is a
+self-contained folder under `usecases/`. The next step is to pull the shared parts
+(the loop, the one door to the model, the guardrails, the trace and the eval runner)
+into a `core/` package, and move legacy intake to `usecases/legacy_intake/`. A new use
+case would then be only its agent instructions, its tools, its data and its answer key.
 
 ## What it is not
 

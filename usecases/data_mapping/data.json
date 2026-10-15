@@ -1,0 +1,51 @@
+{
+  "_about": "Made-up data. A legacy customer extract, the new schema, the legacy system's own control totals for the same extract, and the mapping a data owner signed off (golden_mapping). The agent never sees the full rows or the golden mapping.",
+  "source": {
+    "table": "CUSTMAST",
+    "columns": {
+      "CUST_ID": "Customer number, 6 digits, zero-padded. PIC X(6)",
+      "CUST_NM": "Customer name as LAST, FIRST in capitals. PIC X(40)",
+      "BIRTH_DT": "Date of birth as YYYYMMDD. PIC X(8)",
+      "STATUS_CD": "Account status: A active, I inactive, C closed. PIC X",
+      "BAL_AMT": "Account balance in cents. PIC 9(9)",
+      "STATE_CD": "US state, two letters. PIC XX"
+    },
+    "rows": [
+      {"CUST_ID": "000101", "CUST_NM": "SMITH, JOHN", "BIRTH_DT": "19650412", "STATUS_CD": "A", "BAL_AMT": 1234567, "STATE_CD": "TX"},
+      {"CUST_ID": "000102", "CUST_NM": "GARCIA, MARIA", "BIRTH_DT": "19780923", "STATUS_CD": "A", "BAL_AMT": 250000, "STATE_CD": "CA"},
+      {"CUST_ID": "000103", "CUST_NM": "NGUYEN, LINH", "BIRTH_DT": "19900105", "STATUS_CD": "I", "BAL_AMT": 0, "STATE_CD": "TX"},
+      {"CUST_ID": "000104", "CUST_NM": "PATEL, ANIL", "BIRTH_DT": "19581130", "STATUS_CD": "A", "BAL_AMT": 98765, "STATE_CD": "NJ"},
+      {"CUST_ID": "000105", "CUST_NM": "OKAFOR, CHIDI", "BIRTH_DT": "19830714", "STATUS_CD": "C", "BAL_AMT": 0, "STATE_CD": "GA"},
+      {"CUST_ID": "000106", "CUST_NM": "MILLER, SUSAN", "BIRTH_DT": "19720228", "STATUS_CD": "A", "BAL_AMT": 4500050, "STATE_CD": "TX"},
+      {"CUST_ID": "000107", "CUST_NM": "CHEN, WEI", "BIRTH_DT": "19950817", "STATUS_CD": "I", "BAL_AMT": 1999, "STATE_CD": "WA"},
+      {"CUST_ID": "000108", "CUST_NM": "JOHNSON, ROBERT", "BIRTH_DT": "19610303", "STATUS_CD": "A", "BAL_AMT": 33333, "STATE_CD": "FL"}
+    ]
+  },
+  "target": {
+    "table": "customers",
+    "fields": {
+      "customer_id": {"type": "integer", "required": true},
+      "first_name": {"type": "string, capitalized", "required": false},
+      "last_name": {"type": "string, capitalized", "required": true},
+      "birth_date": {"type": "date, ISO 8601 (YYYY-MM-DD)", "required": true},
+      "status": {"type": "one of active, inactive, closed", "required": true},
+      "balance": {"type": "decimal dollars, 2 places", "required": true},
+      "state": {"type": "string, two letters", "required": false}
+    }
+  },
+  "control_totals": {
+    "_about": "From the legacy system's own end-of-day report for this extract. Reconciliation compares the migrated rows with these.",
+    "row_count": 8,
+    "total_balance_dollars": "61187.14",
+    "status_counts": {"active": 5, "inactive": 2, "closed": 1}
+  },
+  "golden_mapping": [
+    {"target": "customer_id", "source": "CUST_ID", "transform": "to_int"},
+    {"target": "first_name", "source": "CUST_NM", "transform": "name_first"},
+    {"target": "last_name", "source": "CUST_NM", "transform": "name_last"},
+    {"target": "birth_date", "source": "BIRTH_DT", "transform": "date_yyyymmdd"},
+    {"target": "status", "source": "STATUS_CD", "transform": "status_code"},
+    {"target": "balance", "source": "BAL_AMT", "transform": "cents_to_dollars"},
+    {"target": "state", "source": "STATE_CD", "transform": "copy"}
+  ]
+}

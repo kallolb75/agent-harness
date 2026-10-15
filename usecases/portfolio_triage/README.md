@@ -1,6 +1,6 @@
-# The simple harness: an application portfolio triage agent
+# Use case: portfolio triage (Assess)
 
-The smallest complete agent harness in this repo. One file, one agent, three tools,
+The smallest complete agent harness in this repo, and the Assess phase of a modernization program. One file, one agent, three tools,
 about 190 lines with comments. Read it in ten minutes, explain it in two.
 
 **The job.** An architect hands over an application inventory. The agent reads each
@@ -9,9 +9,9 @@ repurchase or refactor, with a one-sentence reason a CIO would accept. This is t
 first step of almost every modernization assessment, done by an agent with guardrails.
 
 ```bash
-uv run python -m simple.triage --fake    # offline: scripted replies, no key, no cost
-uv run pytest simple                     # 5 tests, offline
-uv run python -m simple.triage           # real run: needs ANTHROPIC_API_KEY, a few cents
+uv run python -m usecases.portfolio_triage.triage --fake    # offline: scripted replies, no key, no cost
+uv run pytest usecases                                      # 5 tests, offline
+uv run python -m usecases.portfolio_triage.triage           # real run: needs ANTHROPIC_API_KEY, a few cents
 ```
 
 ## The files
@@ -59,12 +59,12 @@ Run it with `--fake` and watch three things:
 > the answer key is never shown to the agent. A disagreement goes to the architect;
 > either side may be wrong.
 
-## How it relates to the full harness
+## How it relates to the legacy intake harness
 
-The full harness in this repo applies the same ideas to a harder job: reading legacy
-code. It adds:
+The legacy intake harness at the root of this repo applies the same ideas to a harder
+job, reading legacy code (the Understand phase). It adds:
 
-| The simple harness | The full harness adds |
+| Portfolio triage | The legacy intake harness adds |
 | --- | --- |
 | One agent | An orchestrator that delegates to two worker agents through tools |
 | A system prompt in code | Context files per agent, each declaring what it may see |

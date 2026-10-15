@@ -1,9 +1,9 @@
-"""Tests for the simple harness. Run with:  uv run pytest simple"""
+"""Tests for the portfolio triage use case. Run with:  uv run pytest usecases"""
 
 import pytest
 
-from simple.fake import FakeClient
-from simple.triage import APPS, evaluate, run_agent, run_tool
+from usecases.portfolio_triage.fake import FakeClient
+from usecases.portfolio_triage.triage import APPS, evaluate, run_agent, run_tool
 
 
 def test_fake_run_decides_every_app_and_agrees_with_the_architect():
