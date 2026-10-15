@@ -61,6 +61,8 @@ uv run python -m evals.check runs/<run_id>/result.json --set-baseline   # accept
 
 ## Read in this order
 
+New here? Start with [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md): setup, a first run, and how to read what it prints.
+
 1. [docs/CALL_FLOW.md](docs/CALL_FLOW.md): who calls whom, and exactly what each model call sees
 2. [WALKTHROUGH.md](WALKTHROUGH.md): the design choices, the four controls, a file-by-file reading guide
 3. [docs/TELEMETRY.md](docs/TELEMETRY.md): the cost ledger, the trace, and how to read them
