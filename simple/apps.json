@@ -1,0 +1,55 @@
+{
+  "_about": "A made-up application inventory. Each app carries the disposition a human architect chose (expected). The agent never sees that field; the eval compares the agent's calls with it.",
+  "apps": [
+    {
+      "name": "ORDER-ENTRY",
+      "technology": "COBOL and CICS on a z/OS mainframe",
+      "age_years": 31,
+      "users": 1200,
+      "changes_per_year": 40,
+      "business_value": "high",
+      "notes": "Core revenue path. The business wants weekly pricing changes; today each change takes a six-week release. Two of the three developers who know it retire within two years.",
+      "expected": "refactor"
+    },
+    {
+      "name": "HR-REPORTS",
+      "technology": "Crystal Reports on Windows Server 2012",
+      "age_years": 14,
+      "users": 12,
+      "changes_per_year": 0,
+      "business_value": "low",
+      "notes": "Every report now exists in the HR SaaS rolled out last year. The server is out of vendor support.",
+      "expected": "retire"
+    },
+    {
+      "name": "CLAIMS-PORTAL",
+      "technology": "Java 8 monolith on WebLogic, on-premises",
+      "age_years": 9,
+      "users": 3000,
+      "changes_per_year": 26,
+      "business_value": "high",
+      "notes": "The code is in good shape and well tested. The pain is the WebLogic licence and slow manual deployments.",
+      "expected": "replatform"
+    },
+    {
+      "name": "PRICING-ENGINE",
+      "technology": "Go services on Kubernetes with CI/CD",
+      "age_years": 2,
+      "users": 40,
+      "changes_per_year": 50,
+      "business_value": "high",
+      "notes": "Built cloud-native two years ago. Meets its service levels.",
+      "expected": "retain"
+    },
+    {
+      "name": "DOC-ARCHIVE",
+      "technology": ".NET Framework 4.8 on Windows VMs in the company data center",
+      "age_years": 11,
+      "users": 150,
+      "changes_per_year": 1,
+      "business_value": "medium",
+      "notes": "Rarely changes and works. The data center lease ends in nine months.",
+      "expected": "rehost"
+    }
+  ]
+}

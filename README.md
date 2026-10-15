@@ -63,6 +63,8 @@ uv run python -m evals.check runs/<run_id>/result.json --set-baseline   # accept
 
 New here? Start with [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md): setup, a first run, and how to read what it prints.
 
+Want the smallest version first? [simple/](simple/README.md) is a one-file agent that triages an application portfolio: the same loop, tools, guardrails, telemetry and eval in about 190 lines.
+
 1. [docs/CALL_FLOW.md](docs/CALL_FLOW.md): who calls whom, and exactly what each model call sees
 2. [WALKTHROUGH.md](WALKTHROUGH.md): the design choices, the four controls, a file-by-file reading guide
 3. [docs/TELEMETRY.md](docs/TELEMETRY.md): the cost ledger, the trace, and how to read them
@@ -90,6 +92,7 @@ New here? Start with [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md): setup, 
 | `tests/` | Proof the controls work: each test breaks something and expects the harness to notice |
 | `fake/` | Scripted model replies for offline runs and tests |
 | `drill/answer_key.py` | The smallest complete harness loop, for the drill |
+| `simple/` | A one-file portfolio triage agent: the same ideas at their smallest |
 | `runs/` | One folder per run: `result.json`, `tokens.jsonl`, `trace.jsonl` (not committed) |
 
 ## What it is not
