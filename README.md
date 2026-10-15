@@ -14,6 +14,18 @@ evaluation. Each phase of a modernization program plugs in as a use case:
 New to agent harnesses? Start with portfolio triage: one file, one agent, three tools.
 Legacy intake is the fuller design.
 
+## See all three in one engagement
+
+[simulation/](simulation/README.md) runs a simulated client engagement for a fictional
+food distributor, Lone Star Foodservice: meeting transcript, numbered requirements, design
+diagrams, decision records, all three use cases in one command, and a report that traces
+every requirement to evidence. [infra/](infra/README.md) deploys the harness as a Cloud
+Run job with Terraform.
+
+```bash
+uv run python -m simulation.run_engagement        # fake mode, no API key
+```
+
 ## Legacy intake (Understand)
 
 An orchestrator model directs two worker agents over one COBOL program. The

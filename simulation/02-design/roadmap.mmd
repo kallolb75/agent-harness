@@ -1,0 +1,15 @@
+flowchart LR
+  S(["Discovery meeting<br/>REQ-001 to REQ-010"]) --> A
+  subgraph A["Week 1: Assess"]
+    A1["Portfolio triage agent<br/>one disposition per app"] --> A2{"Architect review<br/>REQ-002"}
+  end
+  subgraph U["Week 2: Understand"]
+    U1["Legacy intake agent<br/>ORDPRICE rules with line citations"] --> U2["Parity tests<br/>expected values from the legacy oracle"] --> U3{"Eval gate<br/>recall, citations, accuracy"}
+  end
+  subgraph M["Week 3: Migrate data"]
+    M1["Data mapping agent<br/>masked samples, fixed transforms"] --> M2{"Reconcile to control report<br/>rows, balance, status"} --> M3["Submit mapping"]
+  end
+  A2 -->|approved| U1
+  U3 -->|pass| M1
+  M2 -->|fail: fix and retry| M1
+  M3 --> D(["Client demo and<br/>January board decision"])

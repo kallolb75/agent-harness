@@ -1,0 +1,9 @@
+.git
+.venv
+.idea
+.pytest_cache
+**/__pycache__
+runs/*
+simulation/out
+infra/.terraform
+infra/*.tfstate*

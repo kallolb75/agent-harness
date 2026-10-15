@@ -40,7 +40,13 @@ def main():
     args = parser.parse_args()
 
     # 1. PREPARE ----------------------------------------------------------------
-    run_id = time.strftime("%Y%m%d-%H%M%S") + ("-fake" if args.fake else "")
+    # One folder per run, named by the second it started. Two runs in the same second
+    # get -2, -3: a run is never written over another run's evidence.
+    stamp, n = time.strftime("%Y%m%d-%H%M%S"), 1
+    run_id = stamp + ("-fake" if args.fake else "")
+    while (Path("runs") / run_id).exists():
+        n += 1
+        run_id = f"{stamp}-{n}" + ("-fake" if args.fake else "")
     run_dir = Path("runs") / run_id
     run_dir.mkdir(parents=True)
 

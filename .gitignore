@@ -6,3 +6,6 @@ __pycache__/
 .idea/
 .DS_Store
 drill/mine.py
+simulation/out/
+infra/.terraform/
+infra/*.tfstate*
