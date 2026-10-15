@@ -1,0 +1,15 @@
+{
+  "run_id": "20261009-183651-fake",
+  "prompt_hash": "0f5fc847f9f4",
+  "models": {
+    "orchestrator": "claude-sonnet-5-5",
+    "analyzer": "claude-sonnet-5-5",
+    "test_writer": "claude-haiku-5-5"
+  },
+  "metrics": {
+    "rule_recall": 1.0,
+    "citations_valid": 1.0,
+    "test_accuracy": 1.0,
+    "enough_tests": 1.0
+  }
+}

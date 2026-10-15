@@ -1,0 +1,18 @@
+[project]
+name = "agent-harness"
+version = "0.1.0"
+description = "A small, readable agent harness for legacy code intake: an orchestrator, two workers, context files, a token budget, a trace, a quality gate and a drift check."
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "anthropic>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

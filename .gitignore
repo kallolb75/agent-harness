@@ -1,0 +1,8 @@
+runs/*
+!runs/.gitkeep
+.venv/
+__pycache__/
+.pytest_cache/
+.idea/
+.DS_Store
+drill/mine.py

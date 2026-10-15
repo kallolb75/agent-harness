@@ -1,0 +1,25 @@
+[
+  {
+    "stop_reason": "tool_use",
+    "content": [
+      {"type": "text", "text": "Starting with the rule extraction."},
+      {"type": "tool_use", "id": "toolu_fake_01", "name": "run_analyzer", "input": {}}
+    ],
+    "usage": {"input_tokens": 912, "output_tokens": 48, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+  },
+  {
+    "stop_reason": "tool_use",
+    "content": [
+      {"type": "text", "text": "Nine rules, one open question, and it is a policy question, not a code question. No re-run. Moving to tests."},
+      {"type": "tool_use", "id": "toolu_fake_02", "name": "run_test_writer", "input": {}}
+    ],
+    "usage": {"input_tokens": 1104, "output_tokens": 61, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+  },
+  {
+    "stop_reason": "end_turn",
+    "content": [
+      {"type": "text", "text": "Intake complete for ORDPRICE.cbl: 9 business rules extracted, 10 parity tests written. For a subject matter expert: is the 2003 volume break (pricing memo PM-114) still current policy? The code is the only record of it."}
+    ],
+    "usage": {"input_tokens": 1190, "output_tokens": 72, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+  }
+]

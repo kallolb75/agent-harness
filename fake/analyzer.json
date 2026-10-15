@@ -1,0 +1,50 @@
+[
+  {
+    "stop_reason": "end_turn",
+    "usage": {"input_tokens": 1688, "output_tokens": 842, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0},
+    "json": {
+      "program": "ORDPRICE",
+      "rules": [
+        {"id": "R1", "description": "Wholesale customers get an 8% discount on the line.",
+         "condition": "Customer type is W (wholesale).",
+         "action": "Net = gross x (1 - 0.08), rounded half up to cents. Gross = qty x unit price.",
+         "source_lines": [39, 43, 44]},
+        {"id": "R2", "description": "Government customers get a 5% discount on the line.",
+         "condition": "Customer type is G (government).",
+         "action": "Net = gross x (1 - 0.05), rounded half up to cents.",
+         "source_lines": [40, 44]},
+        {"id": "R3", "description": "Retail customers get no customer-type discount.",
+         "condition": "Customer type is anything other than W or G.",
+         "action": "Net = gross.",
+         "source_lines": [41, 44]},
+        {"id": "R4", "description": "Volume discount of 3% on lines of 100 units or more, applied after the customer discount, so the two compound.",
+         "condition": "Quantity is 100 or more.",
+         "action": "Net = net x (1 - 0.03), rounded half up to cents.",
+         "source_lines": [46, 47, 48]},
+        {"id": "R5", "description": "Small-order fee of $4.95 when the discounted net is under $25.00, except for government customers.",
+         "condition": "Net under 25.00 and customer type is not G.",
+         "action": "Add 4.95 to net.",
+         "source_lines": [51, 52, 53, 55]},
+        {"id": "R6", "description": "The small-order fee is added to net before tax is computed, so the fee is taxed.",
+         "condition": "Whenever the fee applies.",
+         "action": "Tax is computed on net including the fee.",
+         "source_lines": [55, 66]},
+        {"id": "R7", "description": "Sales tax by state: Texas 6.25%, California 7.25%, every other state 5%.",
+         "condition": "Customer type is not G.",
+         "action": "Tax = net x rate, rounded half up to cents. Total = net + tax.",
+         "source_lines": [60, 61, 62, 63, 66, 67]},
+        {"id": "R8", "description": "Government customers are exempt from sales tax.",
+         "condition": "Customer type is G.",
+         "action": "Tax rate is zero, so total = net.",
+         "source_lines": [57, 58]},
+        {"id": "R9", "description": "Credit hold: the order goes on hold if the open balance plus this total exceeds the credit limit. Exactly at the limit is approved.",
+         "condition": "Open balance + total > credit limit.",
+         "action": "Status H (hold); otherwise status A (approved).",
+         "source_lines": [70, 71, 72, 73]}
+      ],
+      "open_questions": [
+        "Policy question: the volume break was added in 2003 under pricing memo PM-114 (line 5). Is it still current policy, or a rule nobody remembers adding?"
+      ]
+    }
+  }
+]

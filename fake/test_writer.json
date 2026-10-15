@@ -1,0 +1,207 @@
+[
+  {
+    "stop_reason": "end_turn",
+    "usage": {
+      "input_tokens": 2804,
+      "output_tokens": 1376,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "json": {
+      "tests": [
+        {
+          "name": "retail_texas_basic",
+          "covers": [
+            "R7"
+          ],
+          "inputs": {
+            "cust_type": "R",
+            "qty": 10,
+            "unit_price": 12.5,
+            "state": "TX",
+            "credit_limit": 5000.0,
+            "open_balance": 0.0
+          },
+          "expected": {
+            "total": 132.81,
+            "status": "A"
+          }
+        },
+        {
+          "name": "wholesale_california_volume",
+          "covers": [
+            "R1",
+            "R4",
+            "R7"
+          ],
+          "inputs": {
+            "cust_type": "W",
+            "qty": 100,
+            "unit_price": 10.0,
+            "state": "CA",
+            "credit_limit": 10000.0,
+            "open_balance": 0.0
+          },
+          "expected": {
+            "total": 957.1,
+            "status": "A"
+          }
+        },
+        {
+          "name": "wholesale_just_under_volume_break",
+          "covers": [
+            "R1",
+            "R7"
+          ],
+          "inputs": {
+            "cust_type": "W",
+            "qty": 99,
+            "unit_price": 10.0,
+            "state": "TX",
+            "credit_limit": 5000.0,
+            "open_balance": 0.0
+          },
+          "expected": {
+            "total": 967.73,
+            "status": "A"
+          }
+        },
+        {
+          "name": "wholesale_at_volume_break_texas",
+          "covers": [
+            "R1",
+            "R4",
+            "R7"
+          ],
+          "inputs": {
+            "cust_type": "W",
+            "qty": 100,
+            "unit_price": 10.0,
+            "state": "TX",
+            "credit_limit": 5000.0,
+            "open_balance": 0.0
+          },
+          "expected": {
+            "total": 948.18,
+            "status": "A"
+          }
+        },
+        {
+          "name": "government_volume_no_tax",
+          "covers": [
+            "R2",
+            "R4",
+            "R8"
+          ],
+          "inputs": {
+            "cust_type": "G",
+            "qty": 200,
+            "unit_price": 5.0,
+            "state": "TX",
+            "credit_limit": 5000.0,
+            "open_balance": 0.0
+          },
+          "expected": {
+            "total": 921.5,
+            "status": "A"
+          }
+        },
+        {
+          "name": "retail_small_order_fee_taxed",
+          "covers": [
+            "R3",
+            "R5",
+            "R6",
+            "R7"
+          ],
+          "inputs": {
+            "cust_type": "R",
+            "qty": 1,
+            "unit_price": 9.99,
+            "state": "NY",
+            "credit_limit": 5000.0,
+            "open_balance": 0.0
+          },
+          "expected": {
+            "total": 15.69,
+            "status": "A"
+          }
+        },
+        {
+          "name": "government_small_order_no_fee",
+          "covers": [
+            "R2",
+            "R5",
+            "R8"
+          ],
+          "inputs": {
+            "cust_type": "G",
+            "qty": 2,
+            "unit_price": 5.0,
+            "state": "TX",
+            "credit_limit": 5000.0,
+            "open_balance": 0.0
+          },
+          "expected": {
+            "total": 9.5,
+            "status": "A"
+          }
+        },
+        {
+          "name": "retail_credit_hold",
+          "covers": [
+            "R9"
+          ],
+          "inputs": {
+            "cust_type": "R",
+            "qty": 50,
+            "unit_price": 20.0,
+            "state": "TX",
+            "credit_limit": 1000.0,
+            "open_balance": 100.0
+          },
+          "expected": {
+            "total": 1062.5,
+            "status": "H"
+          }
+        },
+        {
+          "name": "retail_exactly_at_credit_limit",
+          "covers": [
+            "R9"
+          ],
+          "inputs": {
+            "cust_type": "R",
+            "qty": 1,
+            "unit_price": 100.0,
+            "state": "NY",
+            "credit_limit": 1000.0,
+            "open_balance": 895.0
+          },
+          "expected": {
+            "total": 105.0,
+            "status": "A"
+          }
+        },
+        {
+          "name": "retail_one_cent_over_credit_limit",
+          "covers": [
+            "R9"
+          ],
+          "inputs": {
+            "cust_type": "R",
+            "qty": 1,
+            "unit_price": 100.0,
+            "state": "NY",
+            "credit_limit": 1000.0,
+            "open_balance": 895.01
+          },
+          "expected": {
+            "total": 105.0,
+            "status": "H"
+          }
+        }
+      ]
+    }
+  }
+]

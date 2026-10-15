@@ -1,0 +1,21 @@
+{
+  "_about": "The rules a correct analysis of ORDPRICE.cbl must find. Each rule passes if ANY extracted rule's description, condition and action together contain EVERY keyword group. A group that is a list passes on any one of its words. Matching is case-insensitive. Written by a human from the code, not by a model.",
+  "rules": [
+    {"id": "G1", "what": "wholesale discount 8%",
+     "keywords": ["wholesale", ["8%", "0.08", ".080", "8 percent"]]},
+    {"id": "G2", "what": "government discount 5%",
+     "keywords": ["government", "discount", ["5%", "0.05", ".050", "5 percent"]]},
+    {"id": "G3", "what": "volume discount 3% at 100 units or more",
+     "keywords": ["100", ["3%", "0.03", ".030", "3 percent"]]},
+    {"id": "G4", "what": "small-order fee 4.95 under 25.00",
+     "keywords": ["4.95", "25"]},
+    {"id": "G5", "what": "the small-order fee is added before tax, so it is taxed",
+     "keywords": ["fee", ["before tax", "before sales tax", "taxed", "subject to tax", "included in the taxable"]]},
+    {"id": "G6", "what": "state sales tax TX 6.25%, CA 7.25%, else 5%",
+     "keywords": ["6.25", "7.25"]},
+    {"id": "G7", "what": "government orders pay no sales tax",
+     "keywords": ["government", "tax", ["exempt", "no tax", "zero", "not taxed", "no sales tax", "0%"]]},
+    {"id": "G8", "what": "credit hold when open balance plus total exceeds the limit",
+     "keywords": ["credit", "hold"]}
+  ]
+}
