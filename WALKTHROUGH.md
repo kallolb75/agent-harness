@@ -90,8 +90,8 @@ Full detail in [docs/EVALS.md](docs/EVALS.md).
   is recomputed by the oracle; and enough tests.
 - **The oracle is the key idea.** An expected value written by a model is a claim. In a
   real program the oracle is the legacy system: run the COBOL with the test inputs and
-  record what it returns. Here `oracle.py` stands in, checked against the compiled
-  COBOL on 3,000 random cases with zero mismatches.
+  record what it returns. Here `oracle.py` stands in, and `evals/verify_oracle.py`
+  checks it against the compiled COBOL: 3,000 random orders, zero mismatches.
 - **Fingerprints.** Each run records a hash of every context file and the model per
   agent. The report names what changed since the baseline, so you know where to look.
 - **Deterministic on purpose.** Keywords and arithmetic, no model grading a model.

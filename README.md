@@ -41,10 +41,9 @@ Around the agents sit four controls and a trace:
 - **Drift:** every run is scored against a fixed quality bar and against a reviewed baseline
 - **Telemetry:** every step of a run is a span in a trace you can read as a tree
 
-It is built to be read: about 1,100 lines of Python, much of it comments, using only
-the Anthropic SDK and the standard library. No agent framework, so every moving part
-is visible. The COBOL
-program, its history and its pricing memo are invented for the example.
+It is built to be read: plain Python, much of it comments, using only the Anthropic
+SDK and the standard library. No agent framework, so every moving part is visible.
+The COBOL program, its history and its pricing memo are invented for the example.
 
 ## What one run does
 
@@ -95,7 +94,6 @@ Want the smallest version first? [usecases/portfolio_triage/](usecases/portfolio
 2. [WALKTHROUGH.md](WALKTHROUGH.md): the design choices, the four controls, a file-by-file reading guide
 3. [docs/TELEMETRY.md](docs/TELEMETRY.md): the cost ledger, the trace, and how to read them
 4. [docs/EVALS.md](docs/EVALS.md): the quality gate, the drift check, the golden set and the oracle
-5. [DRILL.md](DRILL.md): rebuild the loop from a blank file, then break each control on purpose
 
 ## What's where
 
@@ -113,11 +111,10 @@ Want the smallest version first? [usecases/portfolio_triage/](usecases/portfolio
 | `legacy/ORDPRICE.cbl` | The legacy program: 74 lines, 5 paragraphs, 9 business rules |
 | `evals/check.py` | The quality gate and the drift check |
 | `evals/golden.json` | The rules a person found in the code |
-| `evals/oracle.py` | What the COBOL really returns, checked against the compiled program on 3,000 cases |
+| `evals/oracle.py` | What the COBOL really returns. `evals/verify_oracle.py` checks it against the compiled program (needs GnuCOBOL) |
 | `evals/baseline.json` | The reviewed run later runs are compared with |
 | `tests/` | Proof the controls work: each test breaks something and expects the harness to notice |
 | `fake/` | Scripted model replies for offline runs and tests |
-| `drill/answer_key.py` | The smallest complete harness loop, for the drill |
 | `usecases/` | The other use cases, one folder each: portfolio triage and data mapping |
 | `runs/` | One folder per run: `result.json`, `tokens.jsonl`, `trace.jsonl` (not committed) |
 

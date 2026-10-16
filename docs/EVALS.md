@@ -41,8 +41,9 @@ expected value has to come from somewhere independent: the legacy system.
 
 In a real program you run the COBOL with the test inputs and record what it returns
 (a golden master). Here `evals/oracle.py` follows `ORDPRICE.cbl` paragraph by
-paragraph in Python with `Decimal` arithmetic, and was checked against the program
-compiled with GnuCOBOL on 3,000 random orders with zero mismatches.
+paragraph in Python with `Decimal` arithmetic. `evals/verify_oracle.py` checks it
+against the program compiled with GnuCOBOL: 3,000 random orders, zero mismatches.
+Run it yourself with `uv run python -m evals.verify_oracle` once `cobc` is installed.
 
 So the Test-writer's job is to choose good **inputs** (boundaries, each customer type,
 each rule). Whether its **expected outputs** are right is decided by the oracle.

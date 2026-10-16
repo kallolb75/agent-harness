@@ -149,7 +149,8 @@ uv run python -m evals.check runs/<run_id>/result.json --set-baseline
 ## Next
 
 1. Read [CALL_FLOW.md](CALL_FLOW.md), then [WALKTHROUGH.md](../WALKTHROUGH.md).
-2. Do [DRILL.md](../DRILL.md): break each safety rail on purpose, then rebuild the
-   core loop from a blank file.
+2. Break each safety rail on purpose and watch the tests catch it: comment out the
+   budget check in `harness/llm.py`, or the order check in `harness/orchestrator.py`,
+   then run `uv run pytest`.
 3. Read [TELEMETRY.md](TELEMETRY.md) and [EVALS.md](EVALS.md) when you want the depth
    on tracing and grading.
