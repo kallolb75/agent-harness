@@ -8,3 +8,6 @@ __pycache__/
 simulation/out/
 infra/.terraform/
 infra/*.tfstate*
+infra/target-slice/.terraform/
+infra/target-slice/.terraform.lock.hcl
+infra/target-slice/*.tfstate*

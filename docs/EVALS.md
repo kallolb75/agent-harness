@@ -48,6 +48,25 @@ Run it yourself with `uv run python -m evals.verify_oracle` once `cobc` is insta
 So the Test-writer's job is to choose good **inputs** (boundaries, each customer type,
 each rule). Whether its **expected outputs** are right is decided by the oracle.
 
+## Random inputs miss threshold defects
+
+`evals/translation_parity.py` makes the point with numbers. It seeds six defects a fluent
+but careless translation of ORDPRICE makes, then compares each variant with the compiled
+COBOL on two input sets: 3,000 random orders, and 96 orders built at every threshold the
+rules contain.
+
+| Defect | Random fails | Boundary fails |
+| --- | --- | --- |
+| Float instead of decimal | 86 | 29 |
+| Discounts added, not compounded | 802 | 9 |
+| Fee added after tax | 27 | 7 |
+| Half-even rounding | 79 | 25 |
+| Credit hold at `>=` the limit | 0 | 15 |
+| Fee at `<=` 25.00 | 0 | 2 |
+
+The random set misses two defects entirely; the boundary set catches all six. Run it with
+`uv run python -m evals.translation_parity` once `cobc` is installed.
+
 ## What changed, and where to look
 
 Every run saves its fingerprints. The report lists what differs from the baseline:

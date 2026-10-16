@@ -4,6 +4,9 @@ Meets REQ-010 of the simulated Lone Star Foodservice engagement: the harness run
 client's own Google Cloud project. `terraform validate` passes. Nothing here has been
 applied to a real project yet.
 
+`target-slice/` is a separate sketch: the modernized order system's first slice on Google
+Cloud. See [target-slice/README.md](target-slice/README.md).
+
 ## What it creates
 
 | Resource | Why |

@@ -112,6 +112,7 @@ Want the smallest version first? [usecases/portfolio_triage/](usecases/portfolio
 | `evals/check.py` | The quality gate and the drift check |
 | `evals/golden.json` | The rules a person found in the code |
 | `evals/oracle.py` | What the COBOL really returns. `evals/verify_oracle.py` checks it against the compiled program (needs GnuCOBOL) |
+| `evals/translation_parity.py` | Six seeded translation defects against the compiled COBOL: random inputs miss two, boundary inputs catch all six (needs GnuCOBOL) |
 | `evals/baseline.json` | The reviewed run later runs are compared with |
 | `tests/` | Proof the controls work: each test breaks something and expects the harness to notice |
 | `fake/` | Scripted model replies for offline runs and tests |
