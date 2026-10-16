@@ -33,6 +33,5 @@ def test_mapping_was_refused_until_it_reconciled(runs):
 
 def test_fake_run_meets_what_it_can_and_says_what_it_cannot(runs):
     status = {rid: s for rid, s, _ in runs[3]}
-    assert all(status[f"REQ-00{n}"] == "MET" for n in range(1, 9))
-    assert status["REQ-009"] == "PARTIAL"
+    assert all(status[f"REQ-00{n}"] == "MET" for n in range(1, 10))
     assert status["REQ-010"] == "READY, NOT APPLIED"

@@ -23,12 +23,26 @@ from pathlib import Path
 
 from evals.check import GATE, evaluate as evaluate_intake
 from harness.config import DEFAULT_BUDGET_USD
+from harness.telemetry import Tracer
 from usecases.data_mapping import mapping
 from usecases.portfolio_triage import triage
 
 ROOT = Path(__file__).resolve().parent.parent
 HERE = ROOT / "simulation"
 OUT = HERE / "out"            # step logs from each run; not committed
+
+
+def new_run(name, live):
+    """A fresh runs/<stamp>-<name> folder and a Tracer that writes trace.jsonl in it."""
+    stamp, n = time.strftime("%Y%m%d-%H%M%S"), 1
+    suffix = "" if live else "-fake"
+    run_id = f"{stamp}-{name}{suffix}"
+    while (ROOT / "runs" / run_id).exists():
+        n += 1
+        run_id = f"{stamp}-{n}-{name}{suffix}"
+    run_dir = ROOT / "runs" / run_id
+    run_dir.mkdir(parents=True)
+    return run_dir, Tracer(run_dir / "trace.jsonl", trace_id=run_id)
 
 
 # 1. ASSESS: portfolio triage ---------------------------------------------------------
@@ -39,13 +53,15 @@ def run_triage(live):
     else:
         from usecases.portfolio_triage.fake import FakeClient
         client = FakeClient()
+    run_dir, tracer = new_run("triage", live)
     log = io.StringIO()
     with contextlib.redirect_stdout(log):          # keep the step log, print nothing
-        summary, decisions, spent = triage.run_agent(client)
+        summary, decisions, spent = triage.run_agent(client, tracer=tracer)
     agreed, coverage, lines = triage.evaluate(decisions)
     return {"decisions": decisions, "agreed": agreed, "total": len(triage.APPS),
             "coverage": coverage, "spent": spent, "budget": triage.BUDGET_USD,
-            "eval_lines": lines, "log": log.getvalue()}
+            "eval_lines": lines, "log": log.getvalue(), "run_id": run_dir.name,
+            "spans": len(tracer.spans)}
 
 
 # 2. UNDERSTAND: legacy intake (the root harness) -------------------------------------
@@ -71,13 +87,15 @@ def run_mapping(live):
     else:
         from usecases.data_mapping.fake import FakeClient
         client = FakeClient()
+    run_dir, tracer = new_run("mapping", live)
     log = io.StringIO()
     with contextlib.redirect_stdout(log):
-        summary, state, spent = mapping.run_agent(client)
+        summary, state, spent = mapping.run_agent(client, tracer=tracer)
     agreed, lines = mapping.evaluate(state)
     return {"state": state, "agreed": agreed, "total": len(mapping.GOLDEN), "spent": spent,
             "budget": mapping.BUDGET_USD, "eval_lines": lines, "log": log.getvalue(),
-            "refusals": log.getvalue().count("ERROR: Refused")}
+            "refusals": log.getvalue().count("ERROR: Refused"), "run_id": run_dir.name,
+            "spans": len(tracer.spans)}
 
 
 def pii_reaches_model():
@@ -112,9 +130,9 @@ def check_requirements(t, i, m, leaks):
         ("REQ-008", met(all(x["spent"] <= x["budget"] for x in (t, i, m))),
          f"triage ${t['spent']:.4f} of ${t['budget']}, intake ${i['spent']:.4f} of ${i['budget']}, "
          f"mapping ${m['spent']:.4f} of ${m['budget']}"),
-        ("REQ-009", "PARTIAL",
-         f"legacy intake: {i['spans']} spans in trace.jsonl; triage and mapping: step logs only "
-         "(moving them onto the shared tracer is on the roadmap)"),
+        ("REQ-009", met(all(x["spans"] > 0 for x in (t, i, m))),
+         f"a trace.jsonl per run: triage {t['spans']} spans, intake {i['spans']}, "
+         f"mapping {m['spans']}"),
         ("REQ-010", "READY, NOT APPLIED" if (ROOT / "infra" / "main.tf").exists() else "NOT MET",
          "Dockerfile and Terraform for a Cloud Run job (infra/), terraform validate passes; not applied"),
     ]

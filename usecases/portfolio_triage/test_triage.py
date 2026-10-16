@@ -38,3 +38,17 @@ def test_the_budget_stops_the_next_call():
 def test_the_turn_cap_stops_the_loop():
     with pytest.raises(RuntimeError, match="within 2 turns"):
         run_agent(FakeClient(), max_turns=2)
+
+
+def test_every_turn_model_call_and_tool_call_is_a_span():
+    from harness.telemetry import Tracer
+    tracer = Tracer()
+    _, decisions, spent = run_agent(FakeClient(), tracer=tracer)
+    names = [s.name for s in tracer.spans]
+    assert names.count("run") == 1
+    assert names.count("llm.call") == names.count("turn") > 0
+    assert names.count("tool.call") > 0
+    cost = sum(s.attrs["cost_usd"] for s in tracer.spans if s.name == "llm.call")
+    assert cost == pytest.approx(spent, abs=1e-5)
+    refused = [s for s in tracer.spans if s.name == "tool.call" and s.attrs["is_error"]]
+    assert refused, "the scripted invalid disposition should show up as an error span"

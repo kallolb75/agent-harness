@@ -60,3 +60,16 @@ def test_control_totals_match_the_source_data():
 def test_the_turn_cap_stops_the_loop():
     with pytest.raises(RuntimeError, match="within 3 turns"):
         run_agent(FakeClient(), max_turns=3)
+
+
+def test_every_turn_model_call_and_tool_call_is_a_span():
+    from harness.telemetry import Tracer
+    tracer = Tracer()
+    _, state, spent = run_agent(FakeClient(), tracer=tracer)
+    names = [s.name for s in tracer.spans]
+    assert names.count("run") == 1
+    assert names.count("llm.call") == names.count("turn") > 0
+    run = next(s for s in tracer.spans if s.name == "run")
+    assert run.attrs["submitted"] is True
+    refused = [s for s in tracer.spans if s.name == "tool.call" and s.attrs["is_error"]]
+    assert any("Refused" in s.attrs["result"] for s in refused)

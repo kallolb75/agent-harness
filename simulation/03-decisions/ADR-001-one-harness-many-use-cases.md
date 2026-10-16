@@ -25,6 +25,8 @@ proposes while code decides.
 ## Consequences
 
 - A new use case is a tools list, a system prompt and an eval. The controls come with it.
-- Today the legacy intake has the richest telemetry (spans) and the other two keep step
-  logs. Moving all three onto the shared tracer is the first refactor after the POC.
-  REQ-009 is reported PARTIAL until then.
+- All three use cases write spans through the shared tracer (`harness/telemetry.py`):
+  a run, each turn, each model call with tokens and cost, each tool call with its result.
+  Any run reads back as a tree with `python -m harness.telemetry runs/<run_id>` (REQ-009).
+- Still separate: triage and mapping keep their own small loop instead of the root
+  harness's `LLM` class and orchestrator. Extracting one shared core is on the roadmap.

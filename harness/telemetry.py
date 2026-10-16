@@ -190,14 +190,14 @@ def _label(span):
                 f"${a.get('cost_usd', 0):.4f}  stop={a.get('stop_reason', '?')}")
     elif name == "tool.call":
         text = f"tool.call {a.get('tool')}  ->  {_short(a.get('result', ''), 60)}"
-    elif name == "orchestrator.turn":
-        text = f"orchestrator.turn {a.get('turn')}"
+    elif name in ("orchestrator.turn", "turn"):
+        text = f"{name} {a.get('turn')}"
     elif name == "worker":
         text = f"worker {a.get('agent')}"
     elif name == "worker.attempt":
         text = f"worker.attempt {a.get('attempt')}" + ("" if a.get("valid", True) else f"  invalid: {a.get('problem')}")
     elif name == "run":
-        text = f"run {span['trace_id']}  {a.get('source', '')}"
+        text = f"run {span['trace_id']}  {a.get('source', a.get('use_case', ''))}"
     elif name == "eval":
         text = f"eval  drift={a.get('verdict')}  gate={a.get('gate')}"
     else:

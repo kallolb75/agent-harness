@@ -11,7 +11,7 @@ The same five parts as portfolio triage:
     1. the loop       call the model, run the tools it asks for, send the results back
     2. tools          what the agent may do, and the code that does it
     3. guardrails     a turn cap, a budget cap, every tool input checked in code
-    4. telemetry      one line per model call and per tool call, with tokens and cost
+    4. telemetry      a span per turn, model call and tool call, with tokens and cost
     5. an eval        the agent's mapping compared with the one a data owner signed off
 
 What this use case adds:
@@ -28,6 +28,8 @@ from collections import Counter
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
+
+from harness.telemetry import Tracer
 
 MODEL = "claude-sonnet-5-5"
 PRICE_PER_MILLION = {"input": 2.00, "output": 10.00}   # USD per million tokens; re-check before quoting
@@ -196,47 +198,59 @@ def run_tool(name, args, state):
 
 
 # 1. THE LOOP ------------------------------------------------------------------------
-def run_agent(client, max_turns=MAX_TURNS, budget_usd=BUDGET_USD):
+def run_agent(client, max_turns=MAX_TURNS, budget_usd=BUDGET_USD, tracer=None):
     """Call the model, run the tools it asks for, send the results back, repeat.
+
+    tracer: a harness Tracer. Every turn, model call and tool call becomes a span (4).
+    Without one, spans are kept in memory and nothing is written.
 
     Returns (final text, state, dollars spent).
     """
+    tracer = tracer or Tracer()
     messages = [{"role": "user", "content": f"Map {SOURCE['table']} to {TARGET['table']}."}]
     state = {"mapping": None, "reconciled": False, "submitted": False}
     spent = 0.0
 
-    for turn in range(1, max_turns + 1):
-        if spent >= budget_usd:                                    # 3. guardrail: budget
-            raise RuntimeError(f"budget spent: ${spent:.4f} of ${budget_usd}")
+    with tracer.span("run", use_case="data_mapping", model=MODEL, budget_usd=budget_usd) as run:
+        for turn in range(1, max_turns + 1):
+            with tracer.span("turn", turn=turn):
+                if spent >= budget_usd:                                # 3. guardrail: budget
+                    raise RuntimeError(f"budget spent: ${spent:.4f} of ${budget_usd}")
 
-        response = client.messages.create(model=MODEL, max_tokens=2000, system=SYSTEM,
-                                          tools=TOOLS, messages=messages)
+                with tracer.span("llm.call", agent="mapper", model=MODEL) as call:
+                    response = client.messages.create(model=MODEL, max_tokens=2000, system=SYSTEM,
+                                                      tools=TOOLS, messages=messages)
+                    usage = response.usage                             # 4. telemetry: tokens and cost
+                    cost = (usage.input_tokens * PRICE_PER_MILLION["input"]
+                            + usage.output_tokens * PRICE_PER_MILLION["output"]) / 1_000_000
+                    spent += cost
+                    call.set(input_tokens=usage.input_tokens, output_tokens=usage.output_tokens,
+                             cost_usd=round(cost, 6), stop_reason=response.stop_reason)
+                print(f"turn {turn}: model  {usage.input_tokens:>5} in {usage.output_tokens:>4} out  "
+                      f"${cost:.4f}  stop={response.stop_reason}")
 
-        usage = response.usage                                     # 4. telemetry: tokens and cost
-        cost = (usage.input_tokens * PRICE_PER_MILLION["input"]
-                + usage.output_tokens * PRICE_PER_MILLION["output"]) / 1_000_000
-        spent += cost
-        print(f"turn {turn}: model  {usage.input_tokens:>5} in {usage.output_tokens:>4} out  "
-              f"${cost:.4f}  stop={response.stop_reason}")
+                messages.append({"role": "assistant", "content": response.content})
 
-        messages.append({"role": "assistant", "content": response.content})
+                if response.stop_reason == "max_tokens":               # 3. guardrail: cut-off reply
+                    raise RuntimeError("reply cut off at max_tokens")
+                if response.stop_reason != "tool_use":                 # done: no more tool requests
+                    run.set(turns=turn, spent_usd=round(spent, 6), reconciled=state["reconciled"],
+                            submitted=state["submitted"])
+                    text = "".join(block.text for block in response.content if block.type == "text")
+                    return text, state, spent
 
-        if response.stop_reason == "max_tokens":                   # 3. guardrail: cut-off reply
-            raise RuntimeError("reply cut off at max_tokens")
-        if response.stop_reason != "tool_use":                     # done: no more tool requests
-            text = "".join(block.text for block in response.content if block.type == "text")
-            return text, state, spent
+                results = []
+                for block in response.content:
+                    if block.type == "tool_use":
+                        with tracer.span("tool.call", tool=block.name) as tool_span:
+                            output, is_error = run_tool(block.name, block.input, state)
+                            tool_span.set(is_error=is_error, result=output[:120])
+                        print(f"        tool   {block.name}  ->  {'ERROR: ' if is_error else ''}{output[:110]}")
+                        results.append({"type": "tool_result", "tool_use_id": block.id,
+                                        "content": output, "is_error": is_error})
+                messages.append({"role": "user", "content": results})
 
-        results = []
-        for block in response.content:
-            if block.type == "tool_use":
-                output, is_error = run_tool(block.name, block.input, state)
-                print(f"        tool   {block.name}  ->  {'ERROR: ' if is_error else ''}{output[:110]}")
-                results.append({"type": "tool_result", "tool_use_id": block.id,
-                                "content": output, "is_error": is_error})
-        messages.append({"role": "user", "content": results})
-
-    raise RuntimeError(f"no answer within {max_turns} turns")      # 3. guardrail: turn cap
+        raise RuntimeError(f"no answer within {max_turns} turns")  # 3. guardrail: turn cap
 
 
 # 5. THE EVAL ------------------------------------------------------------------------

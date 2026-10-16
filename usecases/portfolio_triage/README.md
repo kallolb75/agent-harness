@@ -30,7 +30,7 @@ uv run python -m usecases.portfolio_triage.triage           # real run: needs AN
 | 1. The loop | Call the model. If it asked for tools, run them and send the results back. Repeat until it stops asking | `run_agent()` |
 | 2. Tools | `list_apps`, `get_app`, `record_decision`: a name, a description and a JSON Schema each | `TOOLS`, `run_tool()` |
 | 3. Guardrails | A turn cap, a budget checked before every call, a cut-off reply treated as a failure, and every tool input checked in code | `run_agent()`, `run_tool()` |
-| 4. Telemetry | One line per model call (tokens, cost, stop reason) and per tool call (input, result, errors) | the `print` lines in `run_agent()` |
+| 4. Telemetry | A span per turn, model call (tokens, cost, stop reason) and tool call (result, errors), through the shared tracer; plus one printed line per step | the `tracer.span(...)` blocks in `run_agent()` |
 | 5. The eval | The agent's decisions compared with the architect's; PASS needs every app decided and at least 4 of 5 in agreement | `evaluate()` |
 
 ## What the fake run shows

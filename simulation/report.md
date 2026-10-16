@@ -1,6 +1,6 @@
 # Lone Star Foodservice: POC run report (simulated client)
 
-Generated 2026-10-15 23:25 by `simulation/run_engagement.py`, fake mode: scripted replies, costs are illustrative.
+Generated 2026-10-16 00:32 by `simulation/run_engagement.py`, fake mode: scripted replies, costs are illustrative.
 
 ## Requirements traced to evidence
 
@@ -14,7 +14,7 @@ Generated 2026-10-15 23:25 by `simulation/run_engagement.py`, fake mode: scripte
 | REQ-006 | MET | reconciled True, submitted True, 1 submit attempt(s) refused before reconciliation passed |
 | REQ-007 | MET | no raw name or birth date in anything the model is shown |
 | REQ-008 | MET | triage $0.0337 of $0.25, intake $0.0210 of $0.5, mapping $0.0459 of $0.25 |
-| REQ-009 | PARTIAL | legacy intake: 16 spans in trace.jsonl; triage and mapping: step logs only (moving them onto the shared tracer is on the roadmap) |
+| REQ-009 | MET | a trace.jsonl per run: triage 23 spans, intake 16, mapping 23 |
 | REQ-010 | READY, NOT APPLIED | Dockerfile and Terraform for a Cloud Run job (infra/), terraform validate passes; not applied |
 
 ## Assess: portfolio triage (recommendations, pending architect review)
@@ -37,7 +37,7 @@ Generated 2026-10-15 23:25 by `simulation/run_engagement.py`, fake mode: scripte
 
 ## Understand: ORDPRICE legacy intake
 
-Run `20261015-232544-2-fake`. Gate: **PASS**. Verdict: OK.
+Run `20261016-003254-2-fake`. Gate: **PASS**. Verdict: OK.
 
 | Metric | Value | Floor |
 | --- | --- | --- |
