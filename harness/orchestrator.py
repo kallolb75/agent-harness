@@ -154,4 +154,10 @@ def to_dict(block):
         return {"type": "text", "text": block.text}
     if block.type == "tool_use":
         return {"type": "tool_use", "id": block.id, "name": block.name, "input": block.input}
+    # A real model may think before it asks for a tool. The API requires those thinking
+    # blocks to be sent back unchanged on the next turn, signature included.
+    if block.type == "thinking":
+        return {"type": "thinking", "thinking": block.thinking, "signature": block.signature}
+    if block.type == "redacted_thinking":
+        return {"type": "redacted_thinking", "data": block.data}
     raise ValueError(f"unexpected block type {block.type}")

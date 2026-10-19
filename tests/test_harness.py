@@ -58,3 +58,14 @@ def test_every_call_is_logged(tmp_path):
     lines = (tmp_path / "tokens.jsonl").read_text().splitlines()
     assert len(lines) == 5                     # 3 orchestrator turns + analyzer + test writer
     assert abs(llm.spent_usd - sum(r["cost_usd"] for r in llm.rows)) < 1e-6
+
+
+def test_thinking_blocks_are_kept():
+    # Found in the first live run, 2026-10-19: the real model returned a thinking block
+    # before its tool request, and to_dict refused it. The API needs it sent back as is.
+    from types import SimpleNamespace
+    from harness.orchestrator import to_dict
+    block = SimpleNamespace(type="thinking", thinking="check the rules first", signature="sig123")
+    assert to_dict(block) == {"type": "thinking", "thinking": "check the rules first", "signature": "sig123"}
+    redacted = SimpleNamespace(type="redacted_thinking", data="opaque")
+    assert to_dict(redacted) == {"type": "redacted_thinking", "data": "opaque"}
