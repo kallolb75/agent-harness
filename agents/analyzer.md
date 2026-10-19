@@ -1,6 +1,6 @@
 ---
 model: claude-sonnet-5-5
-max_tokens: 3000
+max_tokens: 8000
 inputs: source
 requires: rules, open_questions
 ---

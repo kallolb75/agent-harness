@@ -1,6 +1,6 @@
 ---
-model: claude-haiku-5-5
-max_tokens: 3000
+model: claude-sonnet-5-5
+max_tokens: 8000
 inputs: analysis, source
 requires: tests
 ---

@@ -1,4 +1,4 @@
-# Walkthrough
+.0# Walkthrough
 
 How this harness works, why each choice was made, and where each one lives in the
 code. Read it next to the code; every claim here points at a file. For who calls
